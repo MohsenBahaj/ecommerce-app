@@ -60,4 +60,4 @@ To get started with this project, follow these steps:
 
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/your-repo-url/ecommerce-app.git
+   git clone https://github.com/MohsenBahaj/ecommerce-app.git
