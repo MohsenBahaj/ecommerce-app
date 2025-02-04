@@ -5,6 +5,8 @@ import 'package:ecomm/common/widgets/texts/brandTitleWithVerify.dart';
 import 'package:ecomm/common/widgets/texts/product_price_text.dart';
 import 'package:ecomm/common/widgets/texts/product_description.dart';
 import 'package:ecomm/common/widgets/texts/product_title_text.dart';
+import 'package:ecomm/features/shop/controllers/product/product_controller.dart';
+import 'package:ecomm/features/shop/models/produc_model.dart';
 import 'package:ecomm/features/shop/screens/product_details/product_details.dart';
 import 'package:ecomm/utils/constants/colors.dart';
 import 'package:ecomm/utils/constants/image_string.dart';
@@ -15,16 +17,22 @@ import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 
 class ProductCardVertical extends StatelessWidget {
-  const ProductCardVertical({super.key, required this.text});
-  final String text;
+  const ProductCardVertical({super.key, required this.product});
+  final ProductModel product;
 
   @override
   Widget build(BuildContext context) {
+    final controller = ProductController.instance;
     final dark = AppHelperFunctions.isDarkMode(context);
+    final size = MediaQuery.of(context).size;
+    final salePercentage =
+        controller.claculateSalePercentage(product.price, product.salePrice);
 
     return GestureDetector(
       onTap: () {
-        Get.to(() => const ProductDetailScreen());
+        Get.to(() => ProductDetailScreen(
+              product: product,
+            ));
       },
       child: Container(
         width: 180,
@@ -39,40 +47,45 @@ class ProductCardVertical extends StatelessWidget {
           children: [
             // Thumbnail, Wishlist button, Discount tag
             CircularContainer(
-              background: dark ? AppColors.dark : AppColors.light,
+              background: dark ? AppColors.light : AppColors.darkContainer,
               child: Stack(
                 children: [
-                  const AppRoundedImage(
-                    borderRadius: AppSizes.md,
-                    height: 155,
-                    imageUrl: AppImageAsset.phone3,
-                    applyImageRaduis: true,
-                    fit: BoxFit.cover,
-                  ),
-                  Positioned(
-                    top: 8,
-                    left: 5,
-                    child: CircularContainer(
-                      radius: AppSizes.sm,
-                      background: AppColors.secondary.withOpacity(0.8),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: AppSizes.sm, vertical: AppSizes.xs),
-                      child: Text(
-                        '25%',
-                        style: Theme.of(context)
-                            .textTheme
-                            .labelLarge!
-                            .apply(color: AppColors.black),
-                      ),
+                  Center(
+                    child: AppRoundedImage(
+                      borderRadius: AppSizes.md,
+                      height: 180,
+                      width: (size.width / 2) - 20,
+                      imageUrl: product.thumbnail,
+                      applyImageRaduis: true,
+                      fit: BoxFit.cover,
+                      isNetworkImage: true,
                     ),
                   ),
+                  if (salePercentage != null)
+                    Positioned(
+                      top: 8,
+                      left: 5,
+                      child: CircularContainer(
+                        radius: AppSizes.sm,
+                        background: AppColors.secondary.withOpacity(0.8),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: AppSizes.sm, vertical: AppSizes.xs),
+                        child: Text(
+                          '$salePercentage%',
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelLarge!
+                              .apply(color: AppColors.black),
+                        ),
+                      ),
+                    ),
                   //fav icon
-                  const Positioned(
+                  Positioned(
                     top: 0,
                     right: 0,
                     child: CircularIcon(
                       icon: Iconsax.heart5,
-                      color: Colors.red,
+                      color: product.isFeatured ? Colors.red : AppColors.grey,
                     ),
                   ),
                 ],
@@ -86,17 +99,16 @@ class ProductCardVertical extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   ProductTitleText(
-                    title: 'Orange Nike $text',
+                    title: product.title,
                   ),
-                  const ProductDescriptionText(
-                    title:
-                        'Orange Nike This is test product for testing overflow of the rexr',
+                  ProductDescriptionText(
+                    title: product.description,
                   ),
                   const SizedBox(
                     height: AppSizes.spaceBtwItem / 2,
                   ),
-                  const BrandTitleWithVerifiedIcon(
-                    title: 'Nikiea',
+                  BrandTitleWithVerifiedIcon(
+                    title: product.brand.name,
                   ),
                 ],
               ),
@@ -108,9 +120,29 @@ class ProductCardVertical extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const ProductPriceText(
-                    price: '35.5',
-                    isLarge: false,
+                  Flexible(
+                    child: Column(
+                      children: [
+                        if (product.productType ==
+                                ProductType.single.toString() &&
+                            product.salePrice > 0)
+                          Padding(
+                            padding: EdgeInsets.only(left: AppSizes.sm),
+                            child: Text(product.price.toString(),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .labelMedium!
+                                    .apply(
+                                        decoration:
+                                            TextDecoration.lineThrough)),
+                          ),
+                        Padding(
+                          padding: EdgeInsets.only(left: AppSizes.sm),
+                          child: ProductPriceText(
+                              price: controller.getProductPrice(product)),
+                        )
+                      ],
+                    ),
                   ),
                   Container(
                     decoration: const BoxDecoration(
@@ -121,13 +153,16 @@ class ProductCardVertical extends StatelessWidget {
                             Radius.circular(AppSizes.productImageRadius),
                       ),
                     ),
-                    child: const SizedBox(
-                      width: AppSizes.iconLg * 1.2,
-                      height: AppSizes.iconLg * 1.2,
-                      child: Center(
-                        child: Icon(
-                          Iconsax.add,
-                          color: AppColors.white,
+                    child: GestureDetector(
+                      onTap: () {},
+                      child: const SizedBox(
+                        width: AppSizes.iconLg * 1.2,
+                        height: AppSizes.iconLg * 1.2,
+                        child: Center(
+                          child: Icon(
+                            Iconsax.add,
+                            color: AppColors.white,
+                          ),
                         ),
                       ),
                     ),

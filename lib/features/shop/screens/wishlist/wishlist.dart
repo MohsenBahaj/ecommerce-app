@@ -2,6 +2,7 @@ import 'package:ecomm/common/widgets/appbar/appbar.dart';
 import 'package:ecomm/common/widgets/icons/circular_icon.dart';
 import 'package:ecomm/common/widgets/layouts/grid_layout.dart';
 import 'package:ecomm/common/widgets/products.cart/product_cards.dart/product_card_vertical.dart';
+import 'package:ecomm/features/shop/models/produc_model.dart';
 import 'package:ecomm/features/shop/screens/home/home.dart';
 import 'package:ecomm/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
@@ -35,7 +36,9 @@ class FavouriteScreen extends StatelessWidget {
               GridLayout(
                   itemCount: 8,
                   itemBuilder: (_, index) {
-                    return const ProductCardVertical(text: 'Favoutire Page');
+                    return ProductCardVertical(
+                      product: ProductModel.empty(),
+                    );
                   })
             ],
           ),

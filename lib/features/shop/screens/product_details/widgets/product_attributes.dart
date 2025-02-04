@@ -3,17 +3,19 @@ import 'package:ecomm/common/widgets/custom_shapes/containers/circular_container
 import 'package:ecomm/common/widgets/texts/head_section.dart';
 import 'package:ecomm/common/widgets/texts/product_price_text.dart';
 import 'package:ecomm/common/widgets/texts/product_title_text.dart';
+import 'package:ecomm/features/shop/models/produc_model.dart';
 import 'package:ecomm/utils/constants/colors.dart';
 import 'package:ecomm/utils/constants/sizes.dart';
 import 'package:ecomm/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 
 class ProductAttributes extends StatelessWidget {
-  const ProductAttributes({super.key});
-
+  const ProductAttributes({super.key, required this.product});
+  final ProductModel product;
   @override
   Widget build(BuildContext context) {
     final dark = AppHelperFunctions.isDarkMode(context);
+    print("+++++ ${product.productAttributes.length}");
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -77,47 +79,36 @@ class ProductAttributes extends StatelessWidget {
           height: AppSizes.spaceBtwItem,
         ),
         // attributes
+
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const AppSectionHeading(
-              title: 'Colors',
-              showActionButton: false,
-            ),
-            const SizedBox(height: AppSizes.spaceBtwItem / 2),
-            Wrap(
-              spacing: 8,
-              children: [
-                AppChoiceChip(
-                    text: 'green', selected: false, onSelected: (val) {}),
-                AppChoiceChip(
-                    text: 'yellow', selected: true, onSelected: (val) {}),
-                AppChoiceChip(
-                    text: 'blue', selected: false, onSelected: (val) {}),
-              ],
-            )
-          ],
-        ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const AppSectionHeading(
-              title: 'Sizes',
-              showActionButton: false,
-            ),
-            const SizedBox(height: AppSizes.spaceBtwItem / 2),
-            Wrap(
-              spacing: 8,
-              children: [
-                AppChoiceChip(
-                    text: 'EU 43', selected: true, onSelected: (val) {}),
-                AppChoiceChip(
-                    text: 'Eu 36', selected: false, onSelected: (val) {}),
-                AppChoiceChip(
-                    text: 'EY 38', selected: false, onSelected: (val) {}),
-              ],
-            )
-          ],
+          children: product.productAttributes!
+              .map(
+                (attribute) => Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      height: AppSizes.spaceBtwItem / 1.5,
+                    ),
+                    AppSectionHeading(
+                      title: attribute.name,
+                      showActionButton: false,
+                    ),
+                    const SizedBox(height: AppSizes.spaceBtwItem / 2),
+                    Wrap(
+                        spacing: 8,
+                        children: attribute.values
+                            .map(
+                              (value) => AppChoiceChip(
+                                  text: value,
+                                  selected: false,
+                                  onSelected: (val) {}),
+                            )
+                            .toList())
+                  ],
+                ),
+              )
+              .toList(),
         ),
       ],
     );

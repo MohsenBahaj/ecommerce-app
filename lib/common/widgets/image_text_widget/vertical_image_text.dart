@@ -28,7 +28,6 @@ class AppVerticalImageText extends StatelessWidget {
             Container(
               width: 56,
               height: 56,
-              padding: const EdgeInsets.all(AppSizes.xs),
               decoration: BoxDecoration(
                 color: backgroundColor ??
                     (AppHelperFunctions.isDarkMode(context)

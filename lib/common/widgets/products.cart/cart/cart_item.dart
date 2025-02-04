@@ -32,7 +32,9 @@ class AppCartItem extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const BrandTitleWithVerifiedIcon(title: 'Nile'),
+              const BrandTitleWithVerifiedIcon(
+                title: 'Nile',
+              ),
               const Flexible(
                 child: ProductTitleText(
                   title: 'Black Sport shoes test',

@@ -89,7 +89,9 @@ class ProductHorizontalCard extends StatelessWidget {
                       SizedBox(
                         height: AppSizes.spaceBtwItem / 2,
                       ),
-                      BrandTitleWithVerifiedIcon(title: 'Nike')
+                      BrandTitleWithVerifiedIcon(
+                        title: 'Nike',
+                      )
                     ],
                   ),
                 ),

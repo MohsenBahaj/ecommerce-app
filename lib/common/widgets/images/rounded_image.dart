@@ -35,6 +35,8 @@ class AppRoundedImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.sizeOf(context);
+
     print("Building AppRoundedImage with imageUrl: $imageUrl");
     return GestureDetector(
       onTap: onPressed,
@@ -62,9 +64,8 @@ class AppRoundedImage extends StatelessWidget {
                     color: overlayColor,
                     progressIndicatorBuilder: (context, url, progress) =>
                         AppShimmerEffect(
-                      width: 55,
-                      radius: 55,
-                      height: 55,
+                      width: width ?? 0,
+                      height: height ?? 0,
                     ),
                     errorWidget: (context, url, error) =>
                         const Icon(Icons.error),

@@ -2,7 +2,9 @@ import 'package:ecomm/common/widgets/custom_shapes/containers/primary_header_con
 import 'package:ecomm/common/widgets/custom_shapes/containers/search_container.dart';
 import 'package:ecomm/common/widgets/layouts/grid_layout.dart';
 import 'package:ecomm/common/widgets/products.cart/product_cards.dart/product_card_vertical.dart';
+import 'package:ecomm/common/widgets/shimmers/verticial_product_shimmer.dart';
 import 'package:ecomm/common/widgets/texts/head_section.dart';
+import 'package:ecomm/features/shop/controllers/product/product_controller.dart';
 import 'package:ecomm/features/shop/screens/all_products/all_product.dart';
 import 'package:ecomm/features/shop/screens/home/widgets/home_app_bar.dart';
 import 'package:ecomm/features/shop/screens/home/widgets/home_categories.dart';
@@ -20,6 +22,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dark = AppHelperFunctions.isDarkMode(context);
+    final controller = ProductController.instance;
     return SingleChildScrollView(
       child: Column(
         children: [
@@ -67,14 +70,7 @@ class HomeScreen extends StatelessWidget {
               padding: const EdgeInsets.all(AppSizes.defaultSpace),
               child: Column(
                 children: [
-                  PromoSlider(
-                    banners: const [
-                      AppImageAsset.banner1,
-                      AppImageAsset.banner2,
-                      AppImageAsset.banner3,
-                      AppImageAsset.banner4,
-                    ],
-                  ),
+                  PromoSlider(),
                   const SizedBox(
                     height: AppSizes.spaceBtwSections,
                   ),
@@ -89,19 +85,25 @@ class HomeScreen extends StatelessWidget {
                   const SizedBox(
                     height: AppSizes.spaceBtwSections,
                   ),
-                  GridLayout(
-                    itemCount: 8,
-                    itemBuilder: (_, index) {
-                      if (index == 2) {
-                        return const ProductCardVertical(
-                          text: 'fdsf jdnfs jdf d sfkjhdf fsdf dsfs   dfds',
-                        );
-                      }
-                      return const ProductCardVertical(
-                        text: '',
+                  Obx(() {
+                    if (controller.isLoading.value)
+                      return const AppVerticalShimmer(itemCount: 4);
+                    if (controller.featuredProducts.isEmpty)
+                      return Center(
+                        child: Text(
+                          "No Data Found!",
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
                       );
-                    },
-                  ),
+                    return GridLayout(
+                      itemCount: controller.featuredProducts.length,
+                      itemBuilder: (_, index) {
+                        return ProductCardVertical(
+                          product: controller.featuredProducts[index],
+                        );
+                      },
+                    );
+                  }),
                 ],
               )),
         ],

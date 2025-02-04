@@ -5,37 +5,33 @@ import 'package:ecomm/features/shop/models/banner_model.dart';
 import 'package:ecomm/features/shop/models/category_model.dart';
 import 'package:get/get.dart';
 
-class CategoryController extends GetxController {
-  static CategoryController get instance => Get.find();
+class BannersController extends GetxController {
+  static BannersController get instance => Get.find();
   final isLoading = false.obs;
-  final _categoryRepositry = Get.put(CategoryRepositry());
-  RxList<CategoryModel> allCategories = <CategoryModel>[].obs;
+
+  final _bannersRepositry = Get.put(BannersRepositry());
+
   RxList<BannerModel> allBanners = <BannerModel>[].obs;
-  RxList<CategoryModel> featuredCategories = <CategoryModel>[].obs;
+
   @override
   void onInit() {
-    fetchCategories();
+    fetchBanners();
     super.onInit();
   }
 
   //load categoyr data
 
-  Future<void> fetchCategories() async {
+  Future<void> fetchBanners() async {
     try {
       //show loader
       isLoading.value = true;
 
       // fetch categories
-      final categories = await _categoryRepositry.getAllCategories();
+      final categories = await _bannersRepositry.getAllBanners();
 
       //update the categories lsit
-      allCategories.assignAll(categories);
+      allBanners.assignAll(categories);
       // filter featud categories
-      featuredCategories.assignAll(allCategories
-          .where(
-              (category) => category.isFeatured && category.parentId.isNotEmpty)
-          .take(8)
-          .toList());
     } catch (e) {
       AppLoaders.errorSnackbar(title: 'oh Snaps', message: e.toString());
     } finally {

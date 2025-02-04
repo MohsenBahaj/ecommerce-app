@@ -1,6 +1,6 @@
+import 'package:ecomm/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 
 class AppSectionHeading extends StatelessWidget {
   const AppSectionHeading({

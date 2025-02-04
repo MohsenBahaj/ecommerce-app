@@ -1,5 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:ecomm/common/widgets/shimmers/shimmer.dart';
+import 'package:ecomm/features/shop/controllers/banner_controller.dart/banners_controller.dart';
+import 'package:ecomm/features/shop/models/banner_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -12,20 +15,24 @@ import 'package:ecomm/utils/constants/sizes.dart';
 class PromoSlider extends StatelessWidget {
   PromoSlider({
     super.key,
-    required this.banners,
   });
-  final List<String> banners;
   final controller = Get.put(HomeController());
+  final bannerController = BannersController.instance;
   @override
   Widget build(BuildContext context) {
+    final List<BannerModel> banners = bannerController.allBanners;
+    final size = MediaQuery.sizeOf(context);
     return Column(
       children: [
         CarouselSlider(
             items: banners
                 .map((url) => AppRoundedImage(
-                      imageUrl: url,
+                      imageUrl: url.imageUrl,
                       applyImageRaduis: true,
                       borderRadius: AppSizes.md,
+                      isNetworkImage: true,
+                      width: size.width - 30,
+                      height: 200,
                     ))
                 .toList(),
             options: CarouselOptions(

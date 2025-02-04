@@ -45,7 +45,9 @@ class BrandCard extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const BrandTitleWithVerifiedIcon(
-                      title: 'Nike ', brandTextSize: TextSizes.large),
+                    title: 'Nike ',
+                    brandTextSize: TextSizes.large,
+                  ),
                   Text(
                     '25 products',
                     overflow: TextOverflow.ellipsis,

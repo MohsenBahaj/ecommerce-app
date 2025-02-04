@@ -1,4 +1,6 @@
 import 'package:ecomm/common/widgets/texts/head_section.dart';
+import 'package:ecomm/features/shop/controllers/product/product_controller.dart';
+import 'package:ecomm/features/shop/models/produc_model.dart';
 import 'package:ecomm/features/shop/screens/product_details/widgets/bottom_add_to_cart_widget.dart';
 import 'package:ecomm/features/shop/screens/product_details/widgets/product_attributes.dart';
 import 'package:ecomm/features/shop/screens/product_details/widgets/product_detail_image_slider.dart';
@@ -14,8 +16,8 @@ import 'package:iconsax/iconsax.dart';
 import 'package:readmore/readmore.dart';
 
 class ProductDetailScreen extends StatelessWidget {
-  const ProductDetailScreen({super.key});
-
+  const ProductDetailScreen({super.key, required this.product});
+  final ProductModel product;
   @override
   Widget build(BuildContext context) {
     final dark = AppHelperFunctions.isDarkMode(context);
@@ -24,7 +26,9 @@ class ProductDetailScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            const ProductDetailImageSlider(),
+            ProductDetailImageSlider(
+              product: product,
+            ),
             Padding(
               padding: const EdgeInsets.only(
                   left: AppSizes.defaultSpace,
@@ -35,13 +39,22 @@ class ProductDetailScreen extends StatelessWidget {
                   // - Rating and share
                   const RatingShareWidget(),
                   //  - price ,Title and stock and brand
-                  const ProductMetaData()
+                  ProductMetaData(
+                    product: product,
+                  )
                   // - attriburtes
                   ,
                   const SizedBox(
                     height: AppSizes.spaceBtwItem / 1.7,
                   ),
-                  const ProductAttributes(),
+                  if (product.productType == ProductType.variable.toString())
+                    ProductAttributes(
+                      product: product,
+                    ),
+                  if (product.productType == ProductType.variable.toString())
+                    const SizedBox(
+                      height: AppSizes.spaceBtwSections,
+                    ),
                   const SizedBox(
                     height: AppSizes.spaceBtwSections,
                   ),
@@ -65,10 +78,8 @@ class ProductDetailScreen extends StatelessWidget {
                   const SizedBox(
                     height: AppSizes.spaceBtwSections,
                   ),
-                  const ReadMoreText(
-                    '''
-Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more 
-''',
+                  ReadMoreText(
+                    product.description,
                     trimLines: 2,
                     trimMode: TrimMode.Line,
                     trimCollapsedText: 'Show more',
